@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.*;
 
 /**
@@ -57,7 +58,7 @@ public class FileStreamSourceTask extends SourceTask {
             stream = System.in;
             // Tracking offset for stdin doesn't make sense
             streamOffset = null;
-            reader = new BufferedReader(new InputStreamReader(stream));
+            reader = new BufferedReader(new InputStreamReader(stream, Charset.defaultCharset()));
         }
         topic = props.get(FileStreamSourceConnector.TOPIC_CONFIG);
         if (topic == null)
@@ -92,7 +93,7 @@ public class FileStreamSourceTask extends SourceTask {
                 } else {
                     streamOffset = 0L;
                 }
-                reader = new BufferedReader(new InputStreamReader(stream));
+                reader = new BufferedReader(new InputStreamReader(stream, Charset.defaultCharset()));
                 log.debug("Opened {} for reading", logFilename());
             } catch (FileNotFoundException e) {
                 log.warn("Couldn't find file for FileStreamSourceTask, sleeping to wait for it to be created");
