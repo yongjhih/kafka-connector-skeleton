@@ -1,7 +1,18 @@
-apply plugin: 'java'
-apply plugin: 'eclipse'
+buildscript {
+    ext.kotlin_version = '1.3.10'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+apply plugin: "kotlin"
 apply plugin: 'maven'
-archivesBaseName = "connect-file"
+archivesBaseName = "kafka-connect-firebase"
 
 repositories {
     mavenLocal()
@@ -11,7 +22,8 @@ repositories {
 dependencies {
     compile "org.apache.kafka:connect-api:0.9.0.0"
     compile "org.slf4j:slf4j-api:1.7.6"
-    
+    compile "org.jetbrains.kotlin:kotlin-stdlib"
+
     testCompile "junit:junit:4.11"
     testCompile "org.easymock:easymock:3.3.1"
     testCompile "org.powermock:powermock-module-junit4:1.6.2"
@@ -31,9 +43,9 @@ test {
     }
 }
 
-javadoc {
-    include "**/org/wushujames/connect/*"
-}
+//javadoc {
+//    include "**/org/wushujames/connect/*"
+//}
 
 artifacts {
     archives testJar
