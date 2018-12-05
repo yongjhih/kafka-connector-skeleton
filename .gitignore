@@ -19,3 +19,4 @@ org.eclipse.jdt.core.prefs
 build
 
 .*.sw[p-z]
+*~
