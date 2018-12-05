@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import java.nio.charset.Charset;
 
 public class FileStreamSourceTaskTest {
 
@@ -83,10 +84,10 @@ public class FileStreamSourceTaskTest {
 
         FileOutputStream os = new FileOutputStream(tempFile);
         assertEquals(null, task.poll());
-        os.write("partial line".getBytes());
+        os.write("partial line".getBytes(Charset.defaultCharset().name()));
         os.flush();
         assertEquals(null, task.poll());
-        os.write(" finished\n".getBytes());
+        os.write(" finished\n".getBytes(Charset.defaultCharset().name()));
         os.flush();
         List<SourceRecord> records = task.poll();
         assertEquals(1, records.size());
@@ -98,7 +99,7 @@ public class FileStreamSourceTaskTest {
 
         // Different line endings, and make sure the final \r doesn't result in a line until we can
         // read the subsequent byte.
-        os.write("line1\rline2\r\nline3\nline4\n\r".getBytes());
+        os.write("line1\rline2\r\nline3\nline4\n\r".getBytes(Charset.defaultCharset().name()));
         os.flush();
         records = task.poll();
         assertEquals(4, records.size());
@@ -115,7 +116,7 @@ public class FileStreamSourceTaskTest {
         assertEquals(Collections.singletonMap(FileStreamSourceTask.FILENAME_FIELD, tempFile.getAbsolutePath()), records.get(3).sourcePartition());
         assertEquals(Collections.singletonMap(FileStreamSourceTask.POSITION_FIELD, 47L), records.get(3).sourceOffset());
 
-        os.write("subsequent text".getBytes());
+        os.write("subsequent text".getBytes(Charset.defaultCharset().name()));
         os.flush();
         records = task.poll();
         assertEquals(1, records.size());
@@ -134,6 +135,7 @@ public class FileStreamSourceTaskTest {
         task.start(config);
     }
 
+    @Test
     public void testInvalidFile() throws InterruptedException {
         config.put(FileStreamSourceConnector.FILE_CONFIG, "bogusfilename");
         task.start(config);

@@ -2,27 +2,40 @@ buildscript {
     ext.kotlin_version = '1.3.10'
 
     repositories {
-        mavenCentral()
+        jcenter()
+        maven { url "https://plugins.gradle.org/m2/" }
     }
 
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "net.ltgt.gradle:gradle-errorprone-plugin:0.0.13"
+        classpath "net.ltgt.gradle:gradle-apt-plugin:0.15"
+        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.6.2"
     }
 }
 
+apply plugin: 'java'
 apply plugin: "kotlin"
 apply plugin: 'maven'
+apply plugin: "net.ltgt.errorprone"
+apply plugin: "net.ltgt.apt"
+
 archivesBaseName = "kafka-connect-firebase"
 
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
 repositories {
-    mavenLocal()
-    mavenCentral()
+    jcenter()
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
     compile "org.apache.kafka:connect-api:0.9.0.0"
     compile "org.slf4j:slf4j-api:1.7.6"
     compile "org.jetbrains.kotlin:kotlin-stdlib"
+
+    errorprone "com.google.errorprone:error_prone_core:2.3.0"
 
     testCompile "junit:junit:4.11"
     testCompile "org.easymock:easymock:3.3.1"
@@ -43,9 +56,8 @@ test {
     }
 }
 
-//javadoc {
-//    include "**/org/wushujames/connect/*"
-//}
+//apply from: 'javadoc.gradle'
+//apply from: 'jacoco.gradle'
 
 artifacts {
     archives testJar
